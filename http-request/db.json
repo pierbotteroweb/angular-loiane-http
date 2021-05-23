@@ -5,12 +5,20 @@
       "nome": "Angular"
     },
     {
-      "nome": "Java 00",
-      "id": 3
+      "nome": "Java",
+      "id": 2
     },
     {
       "nome": "PHP",
-      "id": 7
+      "id": 3
+    },
+    {
+      "nome": "RxJS",
+      "id": 4
+    },
+    {
+      "nome": "C Sharp",
+      "id": 5
     }
   ]
 }
