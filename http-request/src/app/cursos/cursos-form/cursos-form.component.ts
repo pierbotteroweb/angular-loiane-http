@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertModalService } from 'src/app/shared/alert-modal.service';
 import { CursosService } from '../cursos.service';
 import { Location } from "@angular/common";
+import { ActivatedRoute } from '@angular/router';
+import { map, switchMap } from "rxjs/operators";
 
 @Component({
   selector: 'app-cursos-form',
@@ -18,17 +20,54 @@ export class CursosFormComponent implements OnInit {
     private fb: FormBuilder,
     private service: CursosService,
     private modalService: AlertModalService,
-    private location: Location) { }
+    private location: Location,
+    private route: ActivatedRoute) {
+          this.form = this.fb.group({
+          id: [null],
+          nome: [null,[Validators.required,
+            Validators.minLength(3),Validators.maxLength(250)]]
+        }) }
 
   ngOnInit() {
 
+    // this.route.params
+    // .pipe(
+    //   map((params:any)=>params['id'])      
+    // ).subscribe(
+    //   (id)=>{
+    //     console.log(id);
+    //     const curso$ = this.service.loadById(id);
+    //     curso$.subscribe(curso=>{
+    //       this.updateform(curso);
 
-    this.form = this.fb.group({
-      nome: [null,[Validators.required,
-         Validators.minLength(3),Validators.maxLength(250)]]
-    })
+    //     })
+    //   }
+    // )
+
+    // ABAIXO UMA VERSÃO MAIS ELEGANTE E MENOS VERBOSA
+    // DO CODIGO COMENTADO ACIMA, USANDO RECURSOS DE OPERADORES
+    // DE OBSERVABLES
+
+    this.route.params.pipe(
+      map((params:any)=>params['id']),
+      switchMap(id=>this.service.loadById(id))
+    ).subscribe(curso=>this.updateform(curso))
+
+    // COMO ESTAMOS FAZENDO USO DO OBSERVABLE ROUTE.PARAMS,
+    // NÃO É NECESSÁRIO VAZER O UNSUBSCRIBE DOS SUBSCRIBES LISTADOS,
+    // POIS COM A MUDANÇA DE ROTA, O UNSUBSCRIBE JÁ 
+    // É FEITO AUTOMATICAMENTE
 
   }
+
+  updateform(curso){
+    this.form.patchValue({
+      id: curso.id,
+      nome: curso.nome
+    })
+  }
+
+
 
   onSubmit(){
     this.submited=true

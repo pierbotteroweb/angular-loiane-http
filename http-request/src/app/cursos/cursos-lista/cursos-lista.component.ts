@@ -1,5 +1,5 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { empty, Observable, Subject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -30,8 +30,9 @@ export class CursosListaComponent implements OnInit {
 
   constructor(private service: CursosService,
               // private modalService: BsModalService
-              private alertService: AlertModalService 
-
+              private alertService: AlertModalService,
+              private router: Router,
+              private route: ActivatedRoute
               ) { }
 
   ngOnInit() {
@@ -80,6 +81,12 @@ export class CursosListaComponent implements OnInit {
       // this.bsModalRef.content.message = ' Erro ao carregar cursos. Tente novamente mais tarde.'
     
       this.alertService.showAlertDanger('Erro ao carregar cursos. Tente novamente mais tarde.')
+  }
+
+  onEdit(id){
+    // AQUI USAMOS O RELATIVETO (ACTIVATEROUTE)
+    //  PARA QUE O REDIRECT FUNCIONE CORRETAMENTE
+    this.router.navigate(['editar',id], {relativeTo: this.route})
   }
 
 }
