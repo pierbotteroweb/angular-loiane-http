@@ -21,12 +21,7 @@ export class CursosFormComponent implements OnInit {
     private service: CursosService,
     private modalService: AlertModalService,
     private location: Location,
-    private route: ActivatedRoute) {
-          this.form = this.fb.group({
-          id: [null],
-          nome: [null,[Validators.required,
-            Validators.minLength(3),Validators.maxLength(250)]]
-        }) }
+    private route: ActivatedRoute) {}
 
   ngOnInit() {
 
@@ -47,25 +42,41 @@ export class CursosFormComponent implements OnInit {
     // ABAIXO UMA VERSÃO MAIS ELEGANTE E MENOS VERBOSA
     // DO CODIGO COMENTADO ACIMA, USANDO RECURSOS DE OPERADORES
     // DE OBSERVABLES
+        
 
-    this.route.params.pipe(
-      map((params:any)=>params['id']),
-      switchMap(id=>this.service.loadById(id))
-    ).subscribe(curso=>this.updateform(curso))
+        // AULA 130 - COMO ESTAMOS USANDO O RESOLVER DE ROTA, 
+        // A CHAMADA ABAIXO É FEIRA NO GUARD CONFIGURADO
+        // this.route.params.pipe(
+        //   map((params:any)=>params['id']),
+        //   switchMap(id=>this.service.loadById(id))
+        // ).subscribe(curso=>this.updateform(curso))
 
     // COMO ESTAMOS FAZENDO USO DO OBSERVABLE ROUTE.PARAMS,
     // NÃO É NECESSÁRIO VAZER O UNSUBSCRIBE DOS SUBSCRIBES LISTADOS,
     // POIS COM A MUDANÇA DE ROTA, O UNSUBSCRIBE JÁ 
     // É FEITO AUTOMATICAMENTE
 
-  }
+    // AQUI OBTEMOS O RETURN DA CHAMADA FEITA NO NOSSO RESOLVER GUARD
+    const curso = this.route.snapshot.data['curso'];
+    
+    // FAZEMOS A DECLARAÇÃO DO FORM AQUI E JÁ ATROBUIMOS
+    // NO FORM, OS VALORES OBTIDOS NO RESOLVER
+    this.form = this.fb.group({
+      id: [curso.id],
+      nome: [curso.nome,[Validators.required,
+        Validators.minLength(3),Validators.maxLength(250)]]
+    }) 
 
-  updateform(curso){
-    this.form.patchValue({
-      id: curso.id,
-      nome: curso.nome
-    })
   }
+  
+  // COM O USO DO RESOLVER PARA OBTER OS DADOS,
+  // NÃO PRECISAMOS MAIS DO UPDATEFORM
+  // updateform(curso){
+  //   this.form.patchValue({
+  //     id: curso.id,
+  //     nome: curso.nome
+  //   })
+  // }
 
 
 

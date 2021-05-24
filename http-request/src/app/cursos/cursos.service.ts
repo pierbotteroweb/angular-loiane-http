@@ -28,6 +28,6 @@ export class CursosService {
 
   loadById(id){
     // USAMOS O TAKE 1 PARA FAZER O UNSUBSCRIBE AUTOMATICO DO OBSERVABLE
-    return this.http.get(`${this.API}/${id}`).pipe(take(1))
+    return this.http.get<Curso>(`${this.API}/${id}`).pipe(take(1))
   }
 }
