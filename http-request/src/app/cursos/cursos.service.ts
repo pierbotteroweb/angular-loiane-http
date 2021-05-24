@@ -21,9 +21,23 @@ export class CursosService {
     )
   }
 
-  create(curso){
+  // PODEMOS SETAR O SERVIÇO COMO PRIVATE PARA QUE ELE NÃO ESTEJA ACESSÍVEL DIRETAMENTE 
+  private create(curso){
     // USAMOS O TAKE 1 PARA FAZER O UNSUBSCRIBE AUTOMATICO DO OBSERVABLE
     return this.http.post(this.API, curso).pipe(take(1))
+  }
+
+ // PODEMOS SETAR O SERVIÇO COMO PRIVATE PARA QUE ELE NÃO ESTEJA ACESSÍVEL DIRETAMENTE 
+  private update(curso){
+    // USAMOS O TAKE 1 PARA FAZER O UNSUBSCRIBE AUTOMATICO DO OBSERVABLE
+    return this.http.put(`${this.API}/${curso.id}`, curso).pipe(take(1))
+  }
+
+  save(curso){
+    if(curso.id){
+      return this.update(curso)
+    } 
+    return this.create(curso)
   }
 
   loadById(id){

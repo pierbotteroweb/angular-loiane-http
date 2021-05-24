@@ -2,7 +2,7 @@
   "cursos": [
     {
       "id": 1,
-      "nome": "Angular"
+      "nome": "Angular 11"
     },
     {
       "nome": "Java",
@@ -17,8 +17,12 @@
       "id": 4
     },
     {
-      "nome": "C Sharp",
-      "id": 5
+      "id": 5,
+      "nome": "CSharp"
+    },
+    {
+      "id": 6,
+      "nome": "Firebase"
     }
   ]
 }
