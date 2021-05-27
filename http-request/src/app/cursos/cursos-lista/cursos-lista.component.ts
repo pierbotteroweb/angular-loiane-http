@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { empty, Observable, Subject } from 'rxjs';
@@ -15,9 +15,18 @@ import { CursosService } from '../cursos.service';
 })
 export class CursosListaComponent implements OnInit {
 
+
+
+
   // bsModalRef: BsModalRef;
+  deleteModalRef: BsModalRef;
+  @ViewChild('deleteModal', {static: false}) deleteModal;
+
+
   cursos: Curso[];
   cursos$: Observable<Curso[]>;
+
+  cursoSelecionado:Curso
 
   // A VAR ERROR É UM SUBJECT,
   // POIS ALÉM DE SER UM OBSERVABLE,
@@ -29,7 +38,7 @@ export class CursosListaComponent implements OnInit {
   error$ = new Subject<boolean>();
 
   constructor(private service: CursosService,
-              // private modalService: BsModalService
+              private modalService: BsModalService,
               private alertService: AlertModalService,
               private router: Router,
               private route: ActivatedRoute
@@ -87,6 +96,30 @@ export class CursosListaComponent implements OnInit {
     // AQUI USAMOS O RELATIVETO (ACTIVATEROUTE)
     //  PARA QUE O REDIRECT FUNCIONE CORRETAMENTE
     this.router.navigate(['editar',id], {relativeTo: this.route})
+  }
+
+  onDelete(curso){
+    this.cursoSelecionado = curso;
+    this.deleteModalRef = this.modalService.show(this.deleteModal, { class: 'modal-sm' })
+  }
+
+  onConfirmDelete(){
+    this.service.remove(this.cursoSelecionado.id)
+    .subscribe(
+      success=> {
+        this.onRefresh()
+        this.deleteModalRef.hide()
+      },
+      error=> {
+        this.alertService.showAlertDanger('Erro ao deletar o curso. Tente mais tarde.')
+        this.deleteModalRef.hide()
+      }
+    )
+    
+  }
+
+  onDeclineDelete(){
+    this.deleteModalRef.hide()
   }
 
 }

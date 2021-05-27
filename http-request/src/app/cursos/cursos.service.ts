@@ -40,6 +40,10 @@ export class CursosService {
     return this.create(curso)
   }
 
+  remove(id){
+    return this.http.delete(`${this.API}/${id}`).pipe(take(1))
+  }
+
   loadById(id){
     // USAMOS O TAKE 1 PARA FAZER O UNSUBSCRIBE AUTOMATICO DO OBSERVABLE
     return this.http.get<Curso>(`${this.API}/${id}`).pipe(take(1))
