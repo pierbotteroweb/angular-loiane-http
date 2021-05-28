@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { empty, Observable, Subject } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { EMPTY, empty, Observable, Subject } from 'rxjs';
+import { catchError, switchMap, take } from 'rxjs/operators';
 import { AlertModalService } from 'src/app/shared/alert-modal.service';
 import { Curso } from '../curso';
 import { CursosService } from '../cursos.service';
@@ -76,7 +76,10 @@ export class CursosListaComponent implements OnInit {
         console.error(err);
         // this.error$.next(true);
         this.handleError();
-        return empty()
+        // O OPERADOR empty() esta depreciado
+        // usamos então EMPTY disponvel no RxJS que faz a mesma coisa
+        // return empty()
+        return EMPTY
       })
     );
   }
@@ -100,7 +103,25 @@ export class CursosListaComponent implements OnInit {
 
   onDelete(curso){
     this.cursoSelecionado = curso;
-    this.deleteModalRef = this.modalService.show(this.deleteModal, { class: 'modal-sm' })
+    // this.deleteModalRef = this.modalService.show(this.deleteModal, { class: 'modal-sm' })
+
+    // ATRIBUIMOS O RETORNO DO SERVIÇE A UMA VARIAVEL DO TIPO SUBJECT 
+    // (COLOCANCO $ NO FINAL DA VAR). EM SEGUIDA, USAMOS ESTE SUBJECT COMO UM OBSERVABLE asObservable 
+    const result$ = this.alertService.showConfirm('Confirmação', "Tem certeza que deseja remover esse item?")
+    result$.asObservable()
+    .pipe(
+      take(1),
+      switchMap(res => res? this.service.remove(curso.id): EMPTY)
+      // SE O RETORNO FOR FALSE, O EMPTY VAI FAZER O UNSUBSCRIBE AUTOMATICAMENTE
+      // SE FORM VERDADEIRO, DAMOS SEQUENCIA NO ESCOPO DO SUBSCRIBE ABAIXO
+    ).subscribe(
+      success=> {
+        this.onRefresh()
+      },
+      error=> {
+        this.alertService.showAlertDanger('Erro ao deletar o curso. Tente mais tarde.')
+      }
+    )
   }
 
   onConfirmDelete(){

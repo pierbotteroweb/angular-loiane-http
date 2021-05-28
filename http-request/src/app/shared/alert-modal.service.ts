@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AlertModalComponent } from './alert-modal/alert-modal.component';
+import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 
 // ENUM PARA TIPOFICAR OS TIPOS DE ALERTA
 
@@ -52,6 +53,31 @@ export class AlertModalService {
 
     // EM VEZ DE REPETIR O CODIGO ACIMA, USAMOS O METODO PRIVADO CRIADO
     this.showAlert(message,AlertTypes.SUCCESS,3000)
+  }
 
+  // O SERVIÇO ABAIXO VAI SER USADO PARA QUE POSSAMOS USAR UM COMPONENT
+  // MODAL CRIADO COM BOOTSTRAP NAS NOSSAS MENSAGENS DE CONFIRMAÇÃO
+  showConfirm(title: string, msg:string, okTxt?:string, cancelTxt?:string){
+    const bsModalRef: BsModalRef = this.modalService.show(ConfirmModalComponent)
+          bsModalRef.content.title = title;
+          bsModalRef.content.msg = msg;
+          
+          if(okTxt){
+            bsModalRef.content.okTxt = okTxt
+          }
+
+          if(cancelTxt){
+            bsModalRef.content.cancelTxt = cancelTxt
+          }
+
+          // PELO bsModalRef PODEMOS ACESSAR QUALQUER VARIAVEL PUBLICA NO NOSSO
+          // CONFIRM COMPONENT INVOCADO NESTE SERVIÇO. ENTÃO VAMOS ACESSAR
+          // E RETORNAR O NOSSO SUBJECT CRIADO QUE ENVIA O TRUE OU FALSE
+          // SE FIZERMOS APENAS return bsModalRef.content.confirmResult
+          // O SERVICE VAI FUNCIONAR. MAS PARA QUE NO ACESSO AO SERVIÇO O INTELISENTE
+          // IDENTIFIQUE QUE ESTAMOS ENVIANDO UM SUBJECT, PODEMOS FAZER UM CASTING DO TIPO DE DADO
+          // RETORNANDO USANDO UM OPERADOR DIAMOND CONTENDO O TIPO DE INFO QUE ESTAMOS SRETORNANDO        
+
+          return (<ConfirmModalComponent>bsModalRef.content).confirmResult
   }
 }
