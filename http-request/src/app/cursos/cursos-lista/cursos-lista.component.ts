@@ -6,6 +6,7 @@ import { catchError, switchMap, take } from 'rxjs/operators';
 import { AlertModalService } from 'src/app/shared/alert-modal.service';
 import { Curso } from '../curso';
 import { CursosService } from '../cursos.service';
+import { Cursos2Service } from '../cursos2.service';
 
 @Component({
   selector: 'app-cursos-lista',
@@ -37,7 +38,10 @@ export class CursosListaComponent implements OnInit {
 
   error$ = new Subject<boolean>();
 
-  constructor(private service: CursosService,
+  constructor(private service: Cursos2Service,
+    // SUBSTITUIMOS O SERVICE DEDICADO ABAIXO PELO
+    // SERVICE ACIMA QUE ESTÁ EXTENDENDO O SERVICE GENERICO CRIADO
+              // private service: CursosService,
               private modalService: BsModalService,
               private alertService: AlertModalService,
               private router: Router,

@@ -5,6 +5,7 @@ import { CursosService } from '../cursos.service';
 import { Location } from "@angular/common";
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from "rxjs/operators";
+import { Cursos2Service } from '../cursos2.service';
 
 @Component({
   selector: 'app-cursos-form',
@@ -18,7 +19,11 @@ export class CursosFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service: CursosService,
+    private service: Cursos2Service,
+    // SUBSTITUIMOS O SERVICE DEDICADO ABAIXO PELO
+    // SERVICE ACIMA QUE ESTÁ EXTENDENDO O SERVICE GENERICO CRIADO
+              // private service: CursosService,
+    // private service: Cursos2Service,
     private modalService: AlertModalService,
     private location: Location,
     private route: ActivatedRoute) {}
