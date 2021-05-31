@@ -1,18 +1,35 @@
 const express = require('express')
-const cors = require('cors')
+// const cors = require('cors')
 const bodyParser = require('body-parser')
 const multipart = require('connect-multiparty')
+
+
+
+// EM UM DEPLOY, SE TEMOS UMA APLICAÇÃO PEQUENA,
+// PODEMOS TER JUNTOS O BACK END E O FRONT END
+// O QUE SERIA UM (MONOLOTO)
+
+// E SE FOR USADO UM PACOTE COM ANGULAR
+// COM DOCKER E O SERVIDOR nginx, ESTE
+// SERVIDOR NGINX TAMBÉM PODE SER USADO PARA
+// PROXY DO SERVIÇO
+
+// ENTÃO A PROPOSTA DA AULA É FAZER UM PROXY 
+// PARA A API SEM PRECISAR HABILITAR O CORS
 
 const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const corsOptions = {
-    origin: '*',
-    optionsSccessStatus: 200
-}
+// O * OFERECE ACESSO IRRESTRITO A NOSSA API
+// NÃO RECOMENDADO PARA AMBIENTES DE PRODUÇÃO
 
-app.use(cors(corsOptions))
+// const corsOptions = {
+//     origin: '*',
+//     optionsSccessStatus: 200
+// }
+
+// app.use(cors(corsOptions))
 
 const multipartMiddleware = multipart({ uploadDir: './uploads' })
 app.post('/upload', multipartMiddleware, (req, res) => {

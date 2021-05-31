@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { UploadFileService } from '../upload-file.service';
 
 @Component({
@@ -48,10 +49,13 @@ export class UploadFileComponent implements OnInit {
     
     if(this.files&&this.files.size > 0){
       // Usando a URL confirugara no nosso serviço em node
-      // que está usando a porta 8008
-      this.sub = this.service.upload(this.files, 'http://localhost:8000/upload')
-      .subscribe(res=>console.log("Response: ",res,"File: ", this.files))
-
+      // que está usando a porta 8000
+      // this.sub = this.service.upload(this.files, 'http://localhost:8000/upload')
+      // this.sub = this.service.upload(this.files, '/api/upload')
+      this.sub = this.service.upload(this.files, environment.BASE_URL+'/upload') //REMOVENDO A URL E USANDO A REF API PARA
+      .subscribe(res=>console.log("Response: ",res,"File: ", this.files))        // REQUISIÇÕES USANDO NOSSO PROXY, E ASSIM
+                                                                                 // ELIMINANDO A NECESSIDADE DE HANILITAR O CORS
+                                                                                 // ESSE /api TAMBÉM PODE SER DEFINIDO NO ENVIRONMENT
       // PRECISAMOS FAZER UM UNSUBSCRIBE PAR AO OBSERVABLE USADO NO UPLOAD
       // COMO EXISTE UMA SEQUENCIA DE CHAMADAS EM UM PROCESOS D EUPLOAD, NÃO É RECOMENDADO 
       // QUE SE USE UM TAKE(1). POR ISSO PODEMOS FAZER O UNSUBSCRIBE NO NGONDESTROY
