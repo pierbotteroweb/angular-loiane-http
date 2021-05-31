@@ -1,6 +1,7 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { filterResponse, uploadProgress } from 'src/app/shared/rxjs-operator';
 import { environment } from 'src/environments/environment';
 import { UploadFileService } from '../upload-file.service';
 
@@ -58,17 +59,28 @@ export class UploadFileComponent implements OnInit {
                                                                                  // REQUISIÇÕES USANDO NOSSO PROXY, E ASSIM
                                                                                  // ELIMINANDO A NECESSIDADE DE HANILITAR O CORS
                                                                                  // ESSE /api TAMBÉM PODE SER DEFINIDO NO ENVIRONMENT
-      .subscribe((event: HttpEvent<object>)=>{
-        console.log("Response com o conteudo do observe events nas opções do serviço: ",event)
-        if(event.type=== HttpEventType.Response){
-          console.log("Upload concluido")
-        } else if (event.type=== HttpEventType.UploadProgress){
-          const percentDone = Math.round((event.loaded * 100) / event.total)
-          console.log("Progresso", percentDone)
-          this.progress = percentDone
-        }
+      .pipe(
+        uploadProgress(progress=>{
+          this.progress=progress;
+        }),
+        filterResponse()
+      ).subscribe(
+        res=>console.log("Upload concluido")
+      )
 
-      })      
+      // COM A UTILIZAÇÃO DOS OPERADORES RXJS CUSTOMIZADOS
+      // NÃO PRECISMAOS MAIS DO SUBSCRIBE ABAIXO
+      // .subscribe((event: HttpEvent<object>)=>{
+      //   console.log("Response com o conteudo do observe events nas opções do serviço: ",event)
+      //   if(event.type=== HttpEventType.Response){
+      //     console.log("Upload concluido")
+      //   } else if (event.type=== HttpEventType.UploadProgress){
+      //     const percentDone = Math.round((event.loaded * 100) / event.total)
+      //     console.log("Progresso", percentDone)
+      //     this.progress = percentDone
+      //   }
+
+      // })      
       // PRECISAMOS FAZER UM UNSUBSCRIBE PAR AO OBSERVABLE USADO NO UPLOAD
       // COMO EXISTE UMA SEQUENCIA DE CHAMADAS EM UM PROCESOS D EUPLOAD, NÃO É RECOMENDADO 
       // QUE SE USE UM TAKE(1). POR ISSO PODEMOS FAZER O UNSUBSCRIBE NO NGONDESTROY
@@ -77,7 +89,8 @@ export class UploadFileComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.sub.unsubscribe()
-    console.log("Upload ubsubscribed")
+    if(this.sub){this.sub.unsubscribe()
+      console.log("Upload ubsubscribed")
+    }    
   }
 }
