@@ -24,12 +24,19 @@ export class UploadFileService {
       formData.append('file',file, file.name)
     })
 
-    const request = new HttpRequest('POST', url, formData)
-
-    return this.http.request(request)
+    // const request = new HttpRequest('POST', url, formData)
+    // return this.http.request(request)
 
     // PODERIAMOS USAR O POST DO HTTP DIRETAMENTE, COMO ABAIXO
-    // return this.http.post(url, formData)
+    return this.http.post(url, formData, {
+      // COM PARAMETRO DE OPÇÕES DISPONIVEIS NO HTTP POST, O ANGULAR
+      // PODE REPORTAR TODOS EVENTOS HTTP EM ANDAMENTO
+      observe: "events",
+      // AQUI TEREMOS NO RETORNO O TIPO DE EVENTO EM ANDAMENTO,
+      // PRECISAMOS DO EVENTO DE UPLOAD PROGRESS
+      // DISPONIVEL APENAS PARA REQUESTS COM UPLOADS E DOWNLOADS.
+      reportProgress: true
+    })
 
   }
 }
