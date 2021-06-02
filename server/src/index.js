@@ -32,10 +32,24 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // app.use(cors(corsOptions))
 
 const multipartMiddleware = multipart({ uploadDir: './uploads' })
+
+
 app.post('/upload', multipartMiddleware, (req, res) => {
     const files = req.files;
     console.log(files)
     res.json({message: files})
+})
+
+
+app.get('/downloadExcel', (req, res) => {
+    res.download('./uploads/report.xlsx')    
+})
+
+// PARA DOWNLOAD PODEMOS USAR UM RECURSO DO
+// PACOTE EXPRESS DISPONÍVEL NO RESPONSE DA NOSSA CHAMADA
+// res.download('url)
+app.get('/downloadPDF', (req, res) => {
+    res.download('./uploads/report.pdf')    
 })
 
 app.use((err, req, res, next)=>{

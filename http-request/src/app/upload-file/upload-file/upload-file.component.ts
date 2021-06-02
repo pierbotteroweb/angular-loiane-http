@@ -93,4 +93,24 @@ export class UploadFileComponent implements OnInit {
       console.log("Upload ubsubscribed")
     }    
   }
+
+  // EM SE TRATANDO DE DOWNLOAD DE ARQUIVOS,
+  // O ANGULAR NÃO POSSUI RECURSOS NATIVOS PARA 
+  // AUXILIAR O PROCESSO. NESSE CASO, FAZEMOS A LOGICA
+  // USANDO JAVASCRIPT PURO
+  onDownloadExcel(){
+    this.service.download(environment.BASE_URL + '/downloadExcel')
+    .subscribe((res: any)=> {
+      this.service.handleFile(res, 'report.xlsx')
+    })    
+  }
+
+  onDownloadPDF(){
+    this.service.download(environment.BASE_URL + '/downloadPDF')
+    .subscribe((res: any)=> {
+      this.service.handleFile(res, 'report.pdf')
+    })        
+  }
+
+
 }
