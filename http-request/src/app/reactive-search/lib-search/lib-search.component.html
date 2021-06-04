@@ -1,0 +1,34 @@
+<div class="container search-table">
+    <div class="search-box">
+        <div class="row">
+            <div class="col-md-9">
+                <input type="text" id="myInput"
+                        class="form-control" 
+                        [formControl]="queryField"
+                        placeholder="Pesquisar Libs (apenas digitando a busca já é feita)">
+            </div> 
+            <div class="col-auto">
+                <button class="btn btn-lg btn-success" (click)="onSearch()">Pesquisar</button>
+            </div>
+        </div>
+    </div>
+    <div class="search-list">
+        <h3 *ngIf="total" >{{total}} Registros encontrados</h3>
+        <table class="table" id="myTable">
+            <thead>
+                <tr>
+                    <td>NOME</td>
+                    <td>VERSÃO</td>
+                </tr>
+            </thead>
+            <tbody> 
+            <!-- USANDO O PYPE ASYNC, O UNSUBSCRIBE OCORRE AUTOMATICAMENTE -->
+            <tr *ngFor="let result of results$ | async" >
+                <th>{{result.name}}</th>
+                <th>{{result.version}}</th>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
