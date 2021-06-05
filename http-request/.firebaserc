@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "curso-angular-loiane-pbweb": {
+      "hosting": {
+        "http-request": [
+          "curso-angular-loiane-pbweb"
+        ]
+      }
+    }
+  }
+}
